@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { useFonts, Lato_400Regular, Lato_700Bold, Lato_100Thin } from "@expo-google-fonts/lato"
 
 import Loading from './src/components/loading'
 import Dashboard from './src/components/dashboard'
 import Auth from './src/components/auth'
+import { StatusBar } from './src/components/layout'
 
 export default function App() {
   const [page, setPage] = useState("loading")
+  let [fontsLoaded] = useFonts({
+    Lato_100Thin,
+    Lato_400Regular,
+    Lato_700Bold
+  })
 
   /**
    * This function will check the authentication status of the application. If the status
@@ -20,8 +27,10 @@ export default function App() {
       let authenticated = await res.json()
       if (authenticated.Status) {
         setPage("dashboard")
+        console.log("authenticated")
       } else {
         setPage("auth")
+        console.log("not authenticated")
       }
     } catch(err) {
       console.error(err)
@@ -41,17 +50,21 @@ export default function App() {
     checkAuth()
   }, [])
   
+
   return (
-    <View style={styles.container}>
-      { showPage() }
-    </View>
+    <SafeAreaProvider>
+      <StatusBar />
+      <View style={styles.container}>
+        { showPage() }
+      </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#252629',
     alignItems: 'center',
     justifyContent: 'center',
   },
