@@ -6,6 +6,6 @@ export const style = StyleSheet.create({
         color: "white",
         marginBottom: 10,
         fontFamily: "Lato_400Regular",
-        paddingLeft: 20
+        paddingLeft: 20,
     }
 })

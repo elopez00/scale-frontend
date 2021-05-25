@@ -25,7 +25,7 @@ export default function App() {
     try {
       let res = await fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/")
       let authenticated = await res.json()
-      if (authenticated.Status) {
+      if (!authenticated.status) {
         setPage("dashboard")
         console.log("authenticated")
       } else {
@@ -41,7 +41,7 @@ export default function App() {
   const showPage = () => {
     switch(page) {
       case ("dashboard"): return <Dashboard />
-      case ("auth"): return <Auth />
+      case ("auth"): return <Auth setPage={ setPage } checkAuth={checkAuth} />
       default: return <Loading />
     }
   }

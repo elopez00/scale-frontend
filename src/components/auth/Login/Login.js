@@ -8,27 +8,32 @@ import { TextInput, Label, Button } from "../../layout";
 export default function Login(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [invalid, setInvalid] = useState(false);
+
     const login = async () => {
         try {
             let settings = {
                 body: JSON.stringify({
                     email,
-                    password
+                    password,
                 }),
-                method: "post", 
+                method: "post",
                 credentials: "include",
-                headers: new Headers({ "content-type": "application/json" })
+                headers: new Headers({ "content-type": "application/json" }),
             };
             let res = await fetch(
                 "http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/login",
                 settings
             );
             let authentication = await res.json();
-            if (authentication.status) {
-                console.log("Logged in", authentication);
-                console.log(authentication.message);
+            if (!authentication.status) {
+                console.log("user authenticated");
+                setInvalid(false);
+                props.checkAuth();
+                // props.setPage("dashboard")
             } else {
                 console.log("Authentication failed", authentication);
+                setInvalid(true);
                 console.log(authentication.message);
             }
         } catch (err) {
@@ -40,23 +45,31 @@ export default function Login(props) {
         <View style={style.module}>
             <Image style={style.image} source={Logo} />
             <Text style={style.header}>Welcome to Scale</Text>
+            <Text style={style.textWrapper}>
+                <Text style={style.text}>New to Scale? </Text>
+                <Text
+                    style={style.hyperlink}
+                    onPress={() => props.setType("signup")}
+                >
+                    Sign up here
+                </Text>
+            </Text>
             <Label label="Email">
                 <TextInput
+                    invalid={invalid}
                     placeholder="jsmith@email.com"
                     onChangeText={(email) => setEmail(email)}
                 />
             </Label>
             <Label label="Password">
                 <TextInput
+                    invalid={invalid}
                     secureTextEntry
                     placeholder="**********"
                     onChangeText={(password) => setPassword(password)}
                 />
             </Label>
-            <Button
-                style={{ marginTop: 20 }}
-                onPress={() => login()}
-            >
+            <Button style={{ marginTop: 20 }} onPress={() => login()}>
                 Log in
             </Button>
         </View>
