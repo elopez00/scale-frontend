@@ -41,7 +41,7 @@ export default function Signup(props) {
                     settings
                 );
                 let onboard = await res.json();
-                if (!onboard.status) {
+                if (onboard.status === 200) {
                     props.checkAuth();
                 } else {
                     console.log("Failed to onboard user");

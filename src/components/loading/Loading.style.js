@@ -7,10 +7,17 @@ export const style = StyleSheet.create({
     },
     module: {
         backgroundColor: "#252629",
+        alignItems: "center",
+        position: "relative"
     },
     text: {
         color: "white",
-        fontSize: 2,
-        marginTop: 20,
+        fontSize: 25,
+        letterSpacing: 2,
+        fontFamily: "Lato_400Regular"
+    },
+    loading: {
+        position: "absolute",
+        top: 88
     }
 })

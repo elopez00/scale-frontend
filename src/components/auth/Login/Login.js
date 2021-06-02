@@ -10,6 +10,12 @@ export default function Login(props) {
     const [password, setPassword] = useState("");
     const [invalid, setInvalid] = useState(false);
 
+    /**
+     * This function will call the login function in the server and create a cookie
+     * that will authenticate the user's session. If there is a fatal error, it will
+     * be reflected in the catch block, and if there is a request error it will be
+     * reflected as a json object from the server
+     */
     const login = async () => {
         try {
             let settings = {
@@ -21,21 +27,20 @@ export default function Login(props) {
                 credentials: "include",
                 headers: new Headers({ "content-type": "application/json" }),
             };
-            let res = await fetch(
+
+            let raw = await fetch(
                 "http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/login",
                 settings
             );
-            let authentication = await res.json();
-            if (!authentication.status) {
-                console.log("user authenticated");
-                setInvalid(false);
-                props.checkAuth();
-                // props.setPage("dashboard")
-            } else {
-                console.log("Authentication failed", authentication);
+
+            let res = await raw.json();
+            if (res.status !== 200) {
+                console.log(res);
                 setInvalid(true);
-                console.log(authentication.message);
             }
+
+            props.checkAuth();
+            setInvalid(false);
         } catch (err) {
             console.error(err);
         }

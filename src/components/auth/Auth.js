@@ -6,8 +6,15 @@ import Login from "./Login";
 import Signup from "./Signup";
 
 export default function auth(props) {
+    // state
     const [type, setType] = useState("login");
 
+    /**
+     * This function will return an authentication module between the signup and login form 
+     * to use depending on what the user chooses
+     * 
+     * @returns {Component} Object containing the authentication module that will be used
+     */
     const showPage = () => {
         switch (type) {
             case "login":
