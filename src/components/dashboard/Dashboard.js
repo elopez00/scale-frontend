@@ -6,14 +6,16 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Loading from "../loading";
 import { Button } from "../layout";
 
-import { BalancesPage } from "./pages";
+import { BalancesPage, Transactions } from "./pages";
 import PlaidFlow from "./PlaidFlow";
 import Main from "./Main";
 
 export default function Dashboard(props) {
     // state
     const [balances, setBalances] = useState(null);
+    const [transactions, setTransactions] = useState(null);
     const [page, setPage] = useState("loading");
+    const [account, setAccount] = useState("")
 
     /**
      * Gets all Balances from all bank accounts relating to the user and stores it in the transaction
@@ -33,11 +35,49 @@ export default function Dashboard(props) {
             }
 
             setBalances(res.result);
-            setPage("main");
         } catch (err) {
             console.error(err);
         }
     };
+
+    const getTransactions = async () => {
+        try {
+            let raw = await fetch(
+                "http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/getTransactions"
+            );
+
+            let res = await raw.json()
+            if (res.status !== 200) {
+                console.log(res);
+                setPage("get-started");
+            }
+
+            setTransactions(res.result);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const getData = () => {
+        fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/getTransactions")
+        .then(raw => raw.json())
+        .then(res => {
+            if (res.status != 200) {
+                console.log(res)
+            }
+
+            setTransactions(res.result)
+        })
+
+        fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/getBalances")
+        .then(raw => raw.json())
+        .then(res => {
+            if (res.status != 200) {
+                console.log(res);
+            }
+            setBalances(res.result)
+        })
+    }
 
     /**
      * The component handler will show which page the user will see once they are authenticated
@@ -62,19 +102,25 @@ export default function Dashboard(props) {
                     <PlaidFlow setPage={setPage} linkToken={props.linkToken} />
                 );
             case "main":
-                return <Main balances={balances} setPage={setPage} />;
+                return <Main balances={balances} transactions={transactions} setPage={setPage} />;
             case "get-started":
                 return GetStarted;
             case "balances":
-                return <BalancesPage balances={balances} setPage={setPage} />;
+                return <BalancesPage balances={balances} setPage={setPage} setAccount={setAccount} transactions={transactions}/>;
+            case "transactions":
+                return <Transactions setPage={setPage} account={account}/>
             default:
                 return <Loading />;
         }
     };
 
     useEffect(() => {
-        getBalances();
+        getData();
     }, []);
+
+    if (balances && transactions) {
+        page === "loading" && setPage("main");
+    }
 
     return <View>{componentHandler()}</View>;
 }

@@ -3,10 +3,11 @@ import { StyleSheet } from 'react-native'
 export const style = StyleSheet.create({
     subModule: {
         backgroundColor: "#38383d",
-        minWidth: "85%",
-        maxWidth: "85%",
+        minWidth: "90%",
+        maxWidth: "90%",
         padding: 20,
-        borderRadius: 20
+        borderRadius: 20,
+        marginBottom: 20
     },
     header: {
         fontFamily: "Lato_700Bold",

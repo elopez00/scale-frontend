@@ -1,16 +1,21 @@
 import React from "react";
-import { View, Image, Text } from "react-native";
+import { ScrollView, Image, Text } from "react-native";
 
 import { style } from "./Main.style";
-import Logo from '../../../assets/scale-logo.png'
+import Logo from "../../../assets/scale-logo.png";
 
-import Balances from './Balances'
+import Balances from "./Balances";
+import Budget from "./Budget";
 
 export default function Main(props) {
     return (
-        <View style={style.module}>
-            <Image source={Logo} style={style.logo}/>
-            <Balances balances={props.balances} setPage={props.setPage}/>
-        </View>
+        <ScrollView
+            style={{ minWidth: "100%" }}
+            contentContainerStyle={style.module}
+        >
+            <Image source={Logo} style={style.logo} />
+            <Balances balances={props.balances} setPage={props.setPage} />
+            <Budget setPage={props.setPage} />
+        </ScrollView>
     );
 }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView, BackHandler } from 'react-native'
+import { View, ScrollView, BackHandler, Image, TouchableOpacity } from 'react-native'
 
 import { style } from './BalancesPage.style'
-import { style as pageStyle } from '../pages.style'
 import { prettifyNum } from '../../../helper/prettifyNum'
+import { Header, Text, Module, Break, Divider } from '../../../layout'
+import BankIcon from '../../../../assets/bank-icon.png'
 
 class BalancesPage extends Component {
     componentDidMount() {
@@ -20,13 +21,44 @@ class BalancesPage extends Component {
         return true
     }
 
+    accountPress = (account) => {
+        const { setPage, setAccount } = this.props;
+        setAccount(account);
+        setPage("transactions");
+    }
+
     getAccounts = type => {
-        let components = []
+        const { balances } = this.props
+
+        let components = [];
+        let accounts = {}
+        let index = 0;
+
         for (let account of balances[type]) {
+            index++;
+            accounts[account.id] = {
+                ...account,
+                transactions: this.props.transactions[account.id],
+                type
+            }
+
             components.push(
-                <View style={pageStyle.row} key={Math.random()}>
-                    <Text style={pageStyle.subheader}>{account.name}</Text>
-                    <Text style={pageStyle.subtext}>${prettifyNum(account.current)}</Text>
+                <View key={Math.random()}>
+                    <TouchableOpacity onPress={() => this.accountPress(accounts[account.id])}>
+                        <View style={style.account}>
+                            <View style={style.imageGroup}>
+                                <Image source={BankIcon} style={{height: 40, width: 40}}/>
+                                <View style={style.textGroup}>
+                                    <Text>{account.name}</Text>
+                                    <Text subtitle>
+                                        { `Bank • 1234`}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Text style={style.subtext}>${prettifyNum(account.current)}</Text>  
+                        </View>
+                    </TouchableOpacity>
+                    { index !== balances[type].length ? <Divider /> : null }
                 </View>
             )
         }
@@ -34,43 +66,44 @@ class BalancesPage extends Component {
     }
 
     render() {
-        const { balances } = this.props
+        const { balances } = this.props;
     
         return (
-            <ScrollView style={{minWidth: "100%"}} contentContainerStyle={{alignItems: "center"}}>
-                { 
-                    balances.net.liquid ? (
-                        <View style={{...pageStyle.subModule, marginTop: 40}}>
-                            <Text style={pageStyle.header}>Cash</Text>
-                            <Text style={pageStyle.body}>Accounts</Text>
-                            <View style={pageStyle.break} />    
-                            { this.getAccounts("liquid") }
-                        </View>
-                    ) : null
-                }
-                {
-                    balances.net.credit ? (
-                        <View style={{...pageStyle.subModule, marginTop: 40}}>
-                            <Text style={pageStyle.header}>Credit</Text>
-                            <Text style={pageStyle.body}>Accounts</Text>
-                            <View style={pageStyle.break} />    
-                            { this.getAccounts("credit") }
-                        </View>
-                    ) : null
-                }
-                {
-                    balances.net.loan ? (
-                        <View style={{...pageStyle.subModule, marginTop: 40, marginBottom: 40}}>
-                            <Text style={pageStyle.header}>Loans</Text>
-                            <Text style={pageStyle.body}>Accounts</Text>
-                            <View style={pageStyle.break} />    
-                            { this.getAccounts("loan") }
-                        </View>
-                    ) : null
-                }
-            </ScrollView>
+            <View>
+                <Header>
+                    <Header.Button icon="keyboard-arrow-left" onPress={this.handleBack}/>
+                    <Header.Title>Balances</Header.Title>
+                    <Header.Button icon="edit" right style={{fontSize: 25}} />
+                </Header>
+                <ScrollView style={{minWidth: "100%"}} contentContainerStyle={{alignItems: "center"}}>
+                    <Module>
+                        <Text header title>Debit</Text>
+                        <Text header>${prettifyNum(balances.net.liquid)}</Text>
+                        <Break />
+                        <Text header title>Accounts</Text>
+                        <Break />
+                        { this.getAccounts("liquid") }
+                    </Module>
+                    <Module>
+                        <Text header title>Credit</Text>
+                        <Text header>${prettifyNum(balances.net.credit)}</Text>
+                        <Break />
+                        <Text header title>Accounts</Text>
+                        <Break />
+                        { this.getAccounts("credit") }
+                    </Module>
+                    <Module>
+                        <Text header title>Loan</Text>
+                        <Text header>${prettifyNum(balances.net.loan)}</Text>
+                        <Break />
+                        <Text header title>Accounts</Text>
+                        <Break />
+                        { this.getAccounts("loan") }
+                    </Module>
+                </ScrollView>
+            </View>
         )
     }
 }
 
-export default BalancesPage
+export default BalancesPage;

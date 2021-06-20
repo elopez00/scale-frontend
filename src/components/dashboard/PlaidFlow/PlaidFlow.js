@@ -17,7 +17,7 @@ export default function PlaidFlow(props) {
             let raw = await fetch(
                 "http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/exchangePublicToken",
                 {
-                    body: JSON.stringify({ value: linkSuccess.publicToken }),
+                    body: JSON.stringify({ value: linkSuccess.publicToken, name: linkSuccess.institution.name }),
                     method: "post",
                     headers: { "content-type": "application/json" },
                 }
