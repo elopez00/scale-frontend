@@ -26,6 +26,7 @@
     "@testing-library/jest-native": "^4.0.1",
     "@testing-library/react-native": "^7.2.0",
     "jest-expo": "^41.0.0",
+    "react-native-uuid": "^2.0.1",
     "react-test-renderer": "^17.0.2"
   },
   "private": false

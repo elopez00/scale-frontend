@@ -1,24 +1,20 @@
 import { StyleSheet } from 'react-native'
 
 export const style = StyleSheet.create({
-    info: {
+    account: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center"
     },
-    bodyTitle: {
-        textAlign: "right",
-    },
-    bank: {
+    imageGroup: {
         flexDirection: "row",
         alignItems: "center"
     },
-    transaction: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center"
+    textGroup: {
+        paddingLeft: 5
     },
-    transactionText: {
-        textAlign: "right"
+    bankIcon: {
+        height: 40,
+        width: 40
     }
 })

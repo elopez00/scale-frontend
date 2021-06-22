@@ -1,16 +1,27 @@
 import React, { Component } from "react";
 import { View } from "react-native";
+import PropTypes from 'prop-types'
 
 import { style } from "./Module.style";
 import findAll from "../../helper/findAll";
 import Text from "../Text/Text";
 
+/**
+ * Components that separates two values with dots.
+ */
 const TypeSeparator = () => null;
 TypeSeparator.displayName = "TypeSeparator";
 
+/**
+ * Component that groups components within a module in a light gray box.
+ */
 const Sub = () => null;
 Sub.displayName = "Sub";
 
+/**
+ * Component that can allow for deeper lever formatting while keeping track of 
+ * other sub components
+ */
 const Div = () => null;
 Div.displayName = "Div"
 
@@ -30,7 +41,7 @@ class Module extends Component {
         let typeSeparators =
             this.renderTypeSeparator(components.TypeSeparator) || [];
         let subs = this.renderSub(components.Sub) || [];
-        let others = this.renderOther(components.other) || [];
+        let others = components.other || [];
         let divs = this.renderDiv(components.Div) || [];
 
         // sort array of components O(n) because we know the index
@@ -42,9 +53,10 @@ class Module extends Component {
     }
 
     /**
-     *
+     * Renders all type separators in meodule
+     * 
      * @param {Array} typeSeparators all type separators found in the children prop
-     * @returns returns type separators as components
+     * @returns type separators as components in child prop
      */
     renderTypeSeparator(typeSeparators) {
         return typeSeparators?.map((separator) => {
@@ -76,6 +88,12 @@ class Module extends Component {
         });
     }
 
+    /**
+     * Renders all sub components in module
+     * 
+     * @param {Array} subs all subarray components found in children prop
+     * @returns sub modules as components in child prop
+     */
     renderSub(subs) {
         return subs?.map(sub => {
             return {
@@ -85,19 +103,16 @@ class Module extends Component {
         })
     }
 
-    renderOther(others) {
-        return others.map((component) => {
-            return {
-                child: component.child,
-                index: component.index,
-            };
-        });
-    }
-
+    /**
+     * This renders all divs in module
+     * 
+     * @param {Array} divs all divs in components found in children prop
+     * @returns divs as components in child prop
+     */
     renderDiv(divs) {
         return divs?.map(div => {
             return {
-                child: (<View>{this.renderAll(div.child.props)}</View>),
+                child: (<View {...div.child.props}>{this.renderAll(div.child.props)}</View>),
                 index: div.index,
             }
         })
@@ -113,7 +128,15 @@ class Module extends Component {
     }
 }
 
+// prop types
+TypeSeparator.propTypes = {
+    name: PropTypes.string.isRequired,
+    value: PropTypes.any.isRequired,
+}
+
+// sub components instatiation
 Module.TypeSeparator = TypeSeparator;
 Module.Sub = Sub;
 Module.Div = Div;
+
 export default Module;

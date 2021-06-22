@@ -11,7 +11,6 @@ export default function Loading(props) {
             <View style={ style.loading }>
                 <ActivityIndicator color="white" size="large"/>
             </View>
-            <Text style={ style.text }>Loading</Text>
         </View>
     )
 }

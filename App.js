@@ -9,7 +9,7 @@ import {
 } from "@expo-google-fonts/lato";
 
 import Loading from "./src/components/loading";
-import Dashboard from "./src/components/dashboard";
+import Pages from './src/components/pages/Pages'
 import Auth from "./src/components/auth";
 import { StatusBar } from "./src/components/layout";
 
@@ -45,7 +45,7 @@ export default function App() {
             try {
                 // get link token
                 let raw = await fetch(
-                    "http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/getLinkToken"
+                    "http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link"
                 );
 
                 // convert the raw response into json
@@ -76,12 +76,9 @@ export default function App() {
 	 */
     const showPage = () => {
         switch (page) {
-            case "dashboard":
-                return <Dashboard linkToken={linkToken} />;
-            case "auth":
-                return <Auth setPage={setPage} checkAuth={checkAuth} />;
-            default:
-                return <Loading />;
+        case "dashboard": return <Pages {...{linkToken, fontsLoaded}}/>;
+        case "auth": return <Auth setPage={setPage} checkAuth={checkAuth} />;
+        default: return <Loading />;
         }
     };
 

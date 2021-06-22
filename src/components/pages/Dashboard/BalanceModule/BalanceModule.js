@@ -2,10 +2,10 @@ import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { Module, Text } from "../../../layout";
-import { style } from "../Main.style";
+import { style } from "../Dashbaord.style";
 import { prettifyNum } from "../../../helper/prettifyNum";
 
-export default function Balances(props) {
+export default function BalanceModule(props) {
     const totalBal =
         props.balances?.net?.total > 0
             ? `$${prettifyNum(props.balances.net.total)}`
