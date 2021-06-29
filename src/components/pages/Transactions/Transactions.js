@@ -1,14 +1,41 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 import { style } from './Transaction.style'
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, BackHandler } from "react-native";
 import { Module, Header, Text, Break } from "../../layout";
 import { Transaction, TitleModule } from './'
 
-import { monthFormat, renderBreak, renderDivider } from "../../helper";
+import { monthFormat, renderBreak, renderSubDivider } from "../../helper";
 import uuid from 'react-native-uuid'
 
 export default function Transactions(props) {
+    useEffect(() => {
+        addBack();
+        return removeBack;
+    },[])
+
+    /**
+     * Adds back handler listener 
+     */
+    const addBack = () => BackHandler.addEventListener("hardwareBackPress", handleBack);
+
+    /**
+     *  Removes back handler listener
+     */
+    const removeBack = () => BackHandler.removeEventListener("hardwareBackPress", handleBack);
+
+    /**
+     * Back handler function
+     *
+     * @returns {Bool}
+     */
+    const handleBack = () => {
+        const { setPage } = props;
+
+        setPage("balances");
+        return true;
+    };
+
     /**
      * Renders all the transactions from the transaction prop
      *
@@ -21,7 +48,7 @@ export default function Transactions(props) {
         return transactions.map((transaction, index) => (
             <View key={uuid.v4()}>
                 {<Transaction transaction={transaction} />}
-                {renderDivider(index, last)}
+                {renderSubDivider(index, last)}
             </View>
         ));
     };
@@ -37,7 +64,7 @@ export default function Transactions(props) {
 
         // loop through transactions and organize them by month
         account.transactions?.forEach((transaction) => {
-            let month = transaction.date.substring(5);
+            let month = transaction.date.substring(0, 7);
             if (transactions[month]) {
                 transactions[month].push(transaction);
             } else {
@@ -61,6 +88,24 @@ export default function Transactions(props) {
         ));
     };
 
+    const renderTransactionModule = () => {
+        const { account } = props;
+
+        if (account.transactions) {
+            return (
+                <Module>
+                    <Text header title>Transactions</Text>
+                    <Break />
+                    {renderTransactionMonth()}
+                </Module>
+            )
+        }
+
+        return (
+            <Text subtext>No transactions here</Text>
+        )
+    }
+
     return (
         <View>
             <Header>
@@ -76,11 +121,7 @@ export default function Transactions(props) {
                 contentContainerStyle={style.scrollContent}
             >
                 <TitleModule account={props.account}/>
-                <Module>
-                    <Text header title>Transactions</Text>
-                    <Break />
-                    {renderTransactionMonth()}
-                </Module>
+                { renderTransactionModule() }
             </ScrollView>
         </View>
     );

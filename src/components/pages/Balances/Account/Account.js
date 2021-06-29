@@ -3,7 +3,8 @@ import React from "react";
 import { style } from "./Account.style";
 import BankIcon from "../../../../assets/bank-icon.png";
 
-import { View, TouchableOpacity, Image } from "react-native";
+import { View, Image } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text } from "../../../layout";
 
 import { prettifyNum } from "../../../helper";
@@ -22,7 +23,7 @@ export default function Account(props) {
     };
 
     return (
-        <TouchableOpacity onPress={() => accountPress()} {...props}>
+        <TouchableOpacity elevation={1} onPress={() => accountPress()} {...props} style={{...props.style, zIndex: 1}}>
             <View style={style.account}>
                 <View style={style.imageGroup}>
                     <Image source={BankIcon} style={style.bankIcon} />
@@ -34,7 +35,7 @@ export default function Account(props) {
                     </View>
                 </View>
                 <Text style={style.subtext}>
-                    ${prettifyNum(props.account.current)}
+                    {prettifyNum(props.account.current)}
                 </Text>
             </View>
         </TouchableOpacity>

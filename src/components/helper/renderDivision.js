@@ -11,7 +11,21 @@ import { Divider, Break } from '../layout';
  */
 export const renderDivider = (index, last) => {
     if (index !== last) {
-        return <Divider sub />;
+        return <Divider />;
+    }
+};
+
+/**
+ * Given the index, this function will make sure to return a sub-divider for all
+ * iterations except the last one to avoid leaving trailing sub-divders
+ *
+ * @param {Number} index index of element
+ * @param {Number} last index of last element
+ * @returns {Component} subdivider component
+ */
+ export const renderSubDivider = (index, last) => {
+    if (index !== last) {
+        return <Divider sub/>;
     }
 };
 

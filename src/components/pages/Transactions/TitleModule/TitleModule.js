@@ -4,45 +4,56 @@ import { style } from './TitleModule.style'
 import BankIcon from "../../../../assets/bank-icon.png";
 
 import { View, Image } from 'react-native'
-import { Text, Module, Divider } from '../../../layout'
+import { Text, Module, Divider, Break } from '../../../layout'
 
-import { prettifyNum } from '../../../helper'
+import { prettifyNum, dayFormat } from '../../../helper'
 
 
 export default function TitleModule(props) {
-    // converts the backend values to frontend formateed
-    const titleMap = {
-        liquid: "Debit",
-        credit: "Credit",
-        loan: "Loan",
-    };
-
+    const renderPaymentInfo = () => {
+        const { account } = props
+        
+        if (account?.paymentDate) {
+            return (
+                <View>
+                    <Divider />
+                    <Text header title>Next Payment</Text>
+                    <View style={style.account}>
+                        <View>
+                            <Text subtitle>Amount Due</Text>
+                            <Text>{prettifyNum(account.due)}</Text>
+                        </View>
+                        <View>
+                            <Text style={style.subtext} subtitle>Due date</Text>
+                            <Text style={style.subtext}>{dayFormat(account.paymentDate)}</Text>
+                        </View>
+                    </View>
+                </View>
+            )
+        }
+    }
     return (
         <Module>
-            <View style={style.info}>
-                <View>
-                    <Text header title>Account</Text>
-                    <Text header>
-                        ${prettifyNum(props.account.current)}
-                    </Text>
-                </View>
-                <View>
-                    <Text title style={style.bodyTitle}>
-                        {titleMap[props.account.type]}
-                    </Text>
-                    <Text>{props.account.name}</Text>
-                </View>
-            </View>
-            <View>
-                <Divider />
-                <View style={style.bank}>
+            <Text header title>Account</Text>
+            <Break />
+            <View style={style.account}>
+                <View style={style.imageGroup}>
                     <Image source={BankIcon} style={style.bankIcon} />
-                    <Text header subtitle>
-                        {props.account.institution} •{" "}
-                        {props.account.mask}
+                    <View style={style.textGroup}>
+                        <Text>{props.account.name}</Text>
+                        <Text subtitle>
+                            {`${props.account.institution} • ${props.account.mask}`}
+                        </Text>
+                    </View>
+                </View>
+                <View>
+                    <Text title style={style.subtext}>Balance</Text>
+                    <Text style={style.subtext}>
+                        {prettifyNum(props.account.current)}
                     </Text>
                 </View>
             </View>
+            { renderPaymentInfo() }
         </Module>
     )
 }

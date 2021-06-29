@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext } from "react";
 
 import { View } from "react-native";
 import { Transactions, Dashboard, Balances } from "./"
-import Loading from '../loading'
+import Loading from '../loading/Loading'
 
 export default function Pages(props) {
     // state 
@@ -77,7 +77,7 @@ export default function Pages(props) {
         case "dashboard": return <Dashboard {...{balances, transactions, setPage}} /> 
         case "balances": return <Balances {...{balances, transactions, setPage, setAccount}} balances={balances} />
         case "transactions": return <Transactions {...{transactions, setPage, account}} />
-        default: <Loading />
+        default: return <Loading />;
         }
     };
 

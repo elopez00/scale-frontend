@@ -24,35 +24,17 @@ export default function Transaction(props) {
         }
     };
 
-    /**
-     * Gets the transaction amount from props and returns a text element
-     * reflecting a positive or negative transaction
-     *
-     * @returns {Component} text element containing transaction amount
-     */
-    const renderTransactionAmount = () => {
-        const { transaction } = props;
-
-        // the first element of the category prop in transaction will always
-        // return the transaction type.
-        if (transaction.amount < 0) {
-            return <Text style={style.payment}>-${prettifyNum(transaction.amount)}</Text>;
-        } else {
-            return <Text style={style.transfer}>+${prettifyNum(transaction.amount)}</Text>;
-        }
-    };
-
     return (
         <View style={style.module}>
             <View>
-                <Text>{renderName()}</Text>
                 <Text subtitle>{dayFormat(props.transaction.date)}</Text>
+                <Text>{renderName()}</Text>
             </View>
             <View>
                 <Text title style={style.category}>
                     Category
                 </Text>
-                {renderTransactionAmount()}
+                <Text style={style.transfer}>{prettifyNum(-props.transaction.amount)}</Text>
             </View>
         </View>
     );

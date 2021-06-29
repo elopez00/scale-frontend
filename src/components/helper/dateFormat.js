@@ -24,7 +24,7 @@ export const monthFormat = date => {
     let year = date.substring(0, 4);
     let month = date.substring(5, 7);
 
-    return `${year} ${monthMap[month]}`;
+    return `${monthMap[month]} ${year}`;
 }
 
 /**

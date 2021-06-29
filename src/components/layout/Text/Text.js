@@ -4,13 +4,18 @@ import { Text as NativeText } from "react-native";
 import { style } from "./Text.style";
 
 export default function Text(props) {
+    /**
+     * This functions renders styled native text
+     * 
+     * @returns styled text based on component prop
+     */
     const renderText = () => {
         if (props.header) {
             switch (true) {
                 case props.title:
                     return (
                         <NativeText
-                            style={{ ...props.style, ...style.headerTitle }}
+                            style={{ ...style.headerTitle, ...props.style }}
                         >
                             {props.children}
                         </NativeText>
@@ -26,7 +31,7 @@ export default function Text(props) {
                 default:
                     return (
                         <NativeText
-                            style={{ ...props.style, ...style.headerBody }}
+                            style={{ ...style.headerBody, ...props.style }}
                         >
                             {props.children}
                         </NativeText>
@@ -43,14 +48,14 @@ export default function Text(props) {
                 case props.subtitle:
                     return (
                         <NativeText
-                            style={{ ...props.style, ...style.subtitle }}
+                            style={{ ...style.subtitle, ...props.style }}
                         >
                             {props.children}
                         </NativeText>
                     );
                 default:
                     return (
-                        <NativeText style={{ ...props.style, ...style.body }}>
+                        <NativeText style={{ ...style.body, ...props.style }}>
                             {props.children}
                         </NativeText>
                     );

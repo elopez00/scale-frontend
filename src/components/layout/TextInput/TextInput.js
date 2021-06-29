@@ -34,7 +34,11 @@ export default function TextInput(props) {
     // interpolates value to their respective colors
     const invalidInterpolate = invalidAnimation.interpolate({
         inputRange: [0, 1],
-        outputRange: [style.textinput.backgroundColor, "rgba(179, 0, 0, 0.3)"],
+        outputRange: [ props.opp ? 
+            style.opp.backgroundColor 
+            : style.textinput.backgroundColor,
+             "rgba(179, 0, 0, 0.3)"
+        ],
     });
 
     // style that will be fed to the Animated.View
@@ -42,13 +46,31 @@ export default function TextInput(props) {
         backgroundColor: invalidInterpolate,
     };
 
-    return (
-        <Animated.View style={[style.textinput, validity, props.style]}>
-            <CTextInput
-                {...props}
-                placeholderTextColor="#d6d6d6"
-                style={ style.inputContent      }
-            />
-        </Animated.View>
-    );
+    const renderInput = () => {
+        const { opp } = props;
+
+        if (opp) {
+            return (
+                <Animated.View style={[style.opp, validity, props.style]}>
+                    <CTextInput
+                        {...props}
+                        placeholderTextColor="gray"
+                        style={ style.opp }
+                    />
+                </Animated.View>
+            )
+        }
+
+        return (
+            <Animated.View style={[style.textinput, validity, props.style]}>
+                <CTextInput
+                    {...props}
+                    placeholderTextColor="#d6d6d6"
+                    style={ style.inputContent }
+                /> 
+            </Animated.View>
+        )
+    }
+
+    return renderInput();
 }

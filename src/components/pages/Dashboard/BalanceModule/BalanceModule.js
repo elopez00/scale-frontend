@@ -1,15 +1,27 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 
-import { Module, Text } from "../../../layout";
-import { style } from "../Dashbaord.style";
+import { Module, Text, Break } from "../../../layout";
 import { prettifyNum } from "../../../helper/prettifyNum";
 
+import uuid from 'react-native-uuid'
+
 export default function BalanceModule(props) {
-    const totalBal =
-        props.balances?.net?.total > 0
-            ? `$${prettifyNum(props.balances.net.total)}`
-            : `-$${prettifyNum(-props.balances.net.total)}`;
+    const totalBal = prettifyNum(props.balances.net.total);
+
+    const renderSeparators = () => {
+        const { balances } = props;
+        const types = ["liquid", "credit", "loan"];
+        const typeMap = { liquid: "Debit", credit: "Credit", loan: "Loans" };
+        
+        return types.map(type => balances[type] && (
+            <Module.TypeSeparator 
+                key={uuid.v4()}
+                name={typeMap[type]} 
+                value={`${prettifyNum(balances.net[type])}`}
+            />
+        ));
+    }
 
     return (
         <TouchableOpacity
@@ -17,26 +29,11 @@ export default function BalanceModule(props) {
             onPress={() => props.setPage("balances")}
         >
             <Module>
-                <Text header title>
-                    Net Worth
-                </Text>
+                <Text header title>Net Worth</Text>
                 <Text header>{totalBal}</Text>
-                <View style={style.break} />
-                <Text header title>
-                    Balances
-                </Text>
-                <Module.TypeSeparator
-                    name="Debit"
-                    value={`$${prettifyNum(props.balances.net.liquid)}`}
-                />
-                <Module.TypeSeparator
-                    name="Credit"
-                    value={`-$${prettifyNum(props.balances.net.credit)}`}
-                />
-                <Module.TypeSeparator
-                    name="Loans"
-                    value={`-$${prettifyNum(props.balances.net.loan)}`}
-                />
+                <Break />
+                <Text header title>Accounts</Text>
+                { renderSeparators() }
             </Module>
         </TouchableOpacity>
     );

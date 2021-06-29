@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ScrollView, Image, Text } from "react-native";
+import { ScrollView, Image } from "react-native";
 import { BalanceModule, BudgetModule } from './'
 
 import { style } from "./Dashbaord.style";

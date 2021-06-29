@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { View } from "react-native";
 import PropTypes from 'prop-types'
 
+import { View } from "react-native";
 import { style } from "./Module.style";
-import findAll from "../../helper/findAll";
 import Text from "../Text/Text";
+
+import findAll from "../../helper/findAll";
+import uuid from 'react-native-uuid'
 
 /**
  * Components that separates two values with dots.
@@ -63,7 +65,7 @@ class Module extends Component {
             return {
                 child: (
                     <View
-                        key={Math.random()}
+                        key={uuid.v4()}
                         style={{
                             ...separator?.child?.props?.style,
                             ...style.typeSeparator,
@@ -97,7 +99,7 @@ class Module extends Component {
     renderSub(subs) {
         return subs?.map(sub => {
             return {
-                child: (<View key={Math.random()} style={style.sub}>{sub.child.props.children}</View>),
+                child: (<View key={uuid.v4()} style={style.sub}>{sub.child.props.children}</View>),
                 index: sub.index
             }
         })
@@ -112,7 +114,7 @@ class Module extends Component {
     renderDiv(divs) {
         return divs?.map(div => {
             return {
-                child: (<View {...div.child.props}>{this.renderAll(div.child.props)}</View>),
+                child: (<View {...div.child.props} key={uuid.v4()}>{this.renderAll(div.child.props)}</View>),
                 index: div.index,
             }
         })
@@ -121,7 +123,6 @@ class Module extends Component {
     render() {
         return (
             <View style={style.module}>
-                {/* { this.props.children } */}
                 {this.renderAll(this.props)}
             </View>
         );
