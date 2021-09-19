@@ -2,6 +2,7 @@ import React, { useEffect, useState, createContext } from "react";
 
 import { View } from "react-native";
 import { Transactions, Dashboard, Balances } from "./"
+import PlaidLink from "../plaid/PlaidLink"
 import Loading from '../loading/Loading'
 
 export default function Pages(props) {
@@ -10,6 +11,7 @@ export default function Pages(props) {
     const [balances, setBalances] = useState(null);
     const [transactions, setTransactions] = useState(null);
     const [account, setAccount] = useState(null);
+    const [linkToken, setLinkToken] = useState("");
 
     // simulates componentDidMount
     useEffect(() => {
@@ -23,11 +25,34 @@ export default function Pages(props) {
      * @param {Object} incoming 
      */
     const loadState = (incoming) => {
-        if (incoming.balances && incoming.transactions) {
-            setBalances(incoming.balances);
-            setTransactions(incoming.transactions);
-            setPage("dashboard");
+        // determine that the type of 
+        if (typeof incoming.balances !== "string" && typeof incoming.transactions !== "string") {
+            if (incoming.balances && incoming.transactions) {
+                setBalances(incoming.balances);
+                setTransactions(incoming.transactions);
+                setPage("dashboard");
+                return
+            }
         }
+
+        setPage("link")
+        let institution;
+        if (incoming.balances.length > 0) {
+            institution = incoming.balances
+        } else if (incoming.transactions.length > 0) {
+            institution = incoming.transactions
+        }
+
+        let settings = {
+            body: JSON.stringify({id: institution}),
+            method: "PUT",
+            credentials: "include",
+            headers: new Headers({ "content-type": "application/json" }),
+        };
+
+        fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link", settings)
+        .then(raw => raw.json())
+        .then(res => setLinkToken(res.result))
     }
 
     /**
@@ -45,10 +70,13 @@ export default function Pages(props) {
         };
 
         // fetches transactions
-        fetch(`${sdk}/transactions/get`)
+        fetch(`${sdk}/transactions`)
             .then((raw) => raw.json())
             .then((res) => {
-                if (res.status != 200) console.error(res);
+                if (res.status !== 200) {
+                    console.error(res);
+
+                }
                 incoming.transactions = res?.result;
                 
                 loadState(incoming)
@@ -56,10 +84,10 @@ export default function Pages(props) {
             .catch((err) => console.error(err));
 
         // fetches balances
-        fetch(`${sdk}/balances/get`)
+        fetch(`${sdk}/balances`)
             .then((raw) => raw.json())
             .then((res) => {
-                if (res.status != 200) console.error(res);
+                if (res.status !== 200) console.error(res);
                 incoming.balances = res?.result;
 
                 loadState(incoming)
@@ -81,5 +109,10 @@ export default function Pages(props) {
         }
     };
 
-    return <View>{pageHandler()}</View>;
+    return (
+        <React.Fragment>
+            <PlaidLink linkToken={linkToken}/>
+            {pageHandler()}
+        </React.Fragment>
+    );
 }

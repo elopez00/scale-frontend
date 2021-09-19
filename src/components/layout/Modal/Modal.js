@@ -107,10 +107,10 @@ export default function Modal(props) {
 
     return (
         <View style={style.backdrop}>
-            <View style={style.modal}>
+            <View style={{...style.modal, ...props.style}}>
                 <View style={style.header}>
                     { renderTitle() }
-                    <IconButton icon="close" style={style.close}/>
+                    { !props.overrideClose ? <IconButton icon="close" style={style.close}/> : null}
                 </View>
                 <Break />
                 { renderAll() }
