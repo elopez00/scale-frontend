@@ -12,6 +12,7 @@ export default function Pages(props) {
     const [transactions, setTransactions] = useState(null);
     const [account, setAccount] = useState(null);
     const [linkToken, setLinkToken] = useState("");
+    const [update, toggleUpdate] = useState(false);
 
     // simulates componentDidMount
     useEffect(() => {
@@ -52,7 +53,8 @@ export default function Pages(props) {
 
         fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link", settings)
         .then(raw => raw.json())
-        .then(res => setLinkToken(res.result))
+        .then(res => {
+            setUpdate(true); setLinkToken(res.result)})
     }
 
     /**
