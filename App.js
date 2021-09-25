@@ -42,26 +42,6 @@ export default function App() {
                 return;
             }
 
-            try {
-                // get link token
-                let raw = await fetch(
-                    "http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link"
-                );
-
-                // convert the raw response into json
-                let res = await raw.json();
-                if (res.status !== 200) {
-                    console.log(res);
-                    return;
-                }
-
-                // set tokens
-                setToken(res.result);
-                console.log(res.message);
-            } catch (err) {
-                console.error(err);
-            }
-
             setPage("dashboard");
             console.log("authenticated");
         } catch (err) {
