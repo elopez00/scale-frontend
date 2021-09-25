@@ -10,7 +10,6 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { findByType } from '../../helper/findByType'
 import { renderDivider } from '../../helper/renderDivision'
 import uuid from 'react-native-uuid'
-import { render } from 'react-dom'
 
 const Item = () => null;
 Item.displayName = "Item";
@@ -32,14 +31,14 @@ export default function Dropdown(props) {
 
         if (!items.length) return;
 
-        return items.map((item, index) => {
-            let comparison = placeholder.localeCompare(item.props.children);
-            return comparison ? (
+        return items.filter(item => item.props.children !== placeholder).map((item, index) => {
+            // let comparison = placeholder.localeCompare(item.props.children);
+            return (
                 <TouchableOpacity key={uuid.v4()} {...item.props} style={style.item}>
                     <Text>{item.props.children}</Text>
-                    { renderDivider(index, !comparison ? items.length - 2 : items.length - 1) }
+                    { renderDivider(index, items.length - 2) }
                 </TouchableOpacity>
-            ) : null
+            )
         })
     }
 

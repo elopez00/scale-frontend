@@ -34,7 +34,7 @@ export default function Transaction(props) {
                 <Text title style={style.category}>
                     Category
                 </Text>
-                <Text style={style.transfer}>{prettifyNum(-props.transaction.amount)}</Text>
+                <Text style={props.transaction.amount > 0 ? style.payment : style.transfer}>{prettifyNum(-props.transaction.amount)}</Text>
             </View>
         </View>
     );

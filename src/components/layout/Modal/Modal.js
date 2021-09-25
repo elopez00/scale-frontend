@@ -1,8 +1,8 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 
 import { style } from './Modal.style'
 
-import { View } from 'react-native'
+import { Animated, View } from 'react-native'
 // import { TouchableOpacity } from 'react-native-gesture-handler'
 import Text from '../Text/Text'
 import TextInput from '../TextInput/TextInput'
@@ -29,6 +29,37 @@ const Sub = () => null;
 Sub.displayName = "Sub"
 
 export default function Modal(props) {
+    const visibility = useState(new Animated.Value(0))[0];
+    const [display, setDisplay] = useState(false);
+
+    /**
+     * Toggles modal visibility
+     * 
+     * @param {Boolean} show the property that determines whether to show the modal or not
+     */
+    const animateToggle = () => {
+        if (display) {
+            Animated.timing(visibility, {
+                toValue: 0,
+                useNativeDriver: true,
+                duration: 300
+            }).start(() => {
+                setDisplay(false);
+            });
+        } else {
+            setDisplay(true);
+            Animated.timing(visibility, {
+                toValue: 1,
+                useNativeDriver: true,
+                duration: 300
+            }).start();
+        }
+    }
+
+    useEffect(() => {
+        props.showModal !== display && animateToggle();
+    })
+
     /**
      * Grabs all the subcomponents and elements from the children props and 
      * returns them formatted and in the order placed
@@ -68,7 +99,7 @@ export default function Modal(props) {
      * Renders text inputs in modal
      * 
      * @param {Array} textInputs array of text input objects
-     * @returns 
+     * @returns formatted text inputs
      */
     const renderTextInputs = (textInputs) => {
         return textInputs?.map(textInput => {
@@ -84,7 +115,12 @@ export default function Modal(props) {
         })
     }
     
-
+    /**
+     * Renders all dropdown sub components
+     * 
+     * @param {Array} dropdowns array of dropdown objects 
+     * @returns formatted dropdown objects
+     */
     const renderDropdowns = (dropdowns) => {
         return dropdowns?.map(dropdown => {
             return {
@@ -105,17 +141,26 @@ export default function Modal(props) {
 
     }
 
+    // module style
+    const showModule = {
+        opacity: visibility,
+        display: display ? "flex" : "none",
+        zIndex: display ? 5 : -5
+    }
+
     return (
-        <View style={style.backdrop}>
-            <View style={{...style.modal, ...props.style}}>
+        <Animated.View style={[style.backdrop, showModule]}>
+            <View style={[style.modal, props.style]}>
                 <View style={style.header}>
                     { renderTitle() }
-                    { !props.overrideClose ? <IconButton icon="close" style={style.close}/> : null}
+                    { !props.overrideClose ? 
+                        <IconButton icon="close" style={style.close} onPress={() => props.onClose()}/> : null
+                    }
                 </View>
                 <Break />
                 { renderAll() }
             </View>
-        </View>
+        </Animated.View>
     )
 }
 

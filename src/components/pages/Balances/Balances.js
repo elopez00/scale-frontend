@@ -11,6 +11,8 @@ import uuid from "react-native-uuid";
 
 export default function Balances(props) {
     const [item, setItem ] = useState("Every Week");
+    const [showModal, toggleModal] = useState(false);
+
     useEffect(() => {
         addBack();
         
@@ -93,7 +95,7 @@ export default function Balances(props) {
 
     return (
         <View>
-            <Modal>
+            <Modal showModal={showModal} onClose={() => toggleModal(false)}>
                 <Modal.Title>Got Cash?</Modal.Title>
                 <Modal.TextInput placeholder="$100" label="Add Amount" />
                 <Modal.Dropdown label="Want a Reminder?" placeholder={item}>
@@ -111,7 +113,7 @@ export default function Balances(props) {
                 {/* <Header.Button icon="edit" right style={style.headerButton} /> */}
                 <Header.Menu right icon="edit" style={{fontSize: 25}}>
                     <IconMenu.Item onPress={() => console.log("hello")}>Add Account</IconMenu.Item>
-                    <IconMenu.Item onPress={() => console.log("hello")}>Add Cash</IconMenu.Item>
+                    <IconMenu.Item onPress={() => toggleModal(true)}>Add Cash</IconMenu.Item>
                     <IconMenu.Item onPress={() => console.log("hello")}>Add Savings</IconMenu.Item>
                     <IconMenu.Item onPress={() => console.log("hello")} red>Remove Account</IconMenu.Item>
                 </Header.Menu>

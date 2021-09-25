@@ -34,27 +34,26 @@ export default function Pages(props) {
                 setPage("dashboard");
                 return
             }
-        }
+        } else {
+            setPage("link")
+            let institution;
+            if (incoming?.balances?.length > 0) {
+                institution = incoming.balances
+            } else if (incoming?.transactions?.length > 0) {
+                institution = incoming.transactions
+            }
 
-        setPage("link")
-        let institution;
-        if (incoming.balances.length > 0) {
-            institution = incoming.balances
-        } else if (incoming.transactions.length > 0) {
-            institution = incoming.transactions
-        }
+            let settings = {
+                body: JSON.stringify({id: institution}),
+                method: "PUT",
+                credentials: "include",
+                headers: new Headers({ "content-type": "application/json" }),
+            };
 
-        let settings = {
-            body: JSON.stringify({id: institution}),
-            method: "PUT",
-            credentials: "include",
-            headers: new Headers({ "content-type": "application/json" }),
-        };
-
-        fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link", settings)
-        .then(raw => raw.json())
-        .then(res => {
-            setUpdate(true); setLinkToken(res.result)})
+            fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link", settings)
+            .then(raw => raw.json())
+            .then(res => {
+                toggleUpdate(true); setLinkToken(res.result)})}
     }
 
     /**
@@ -107,13 +106,13 @@ export default function Pages(props) {
         case "dashboard": return <Dashboard {...{balances, transactions, setPage}} /> 
         case "balances": return <Balances {...{balances, transactions, setPage, setAccount}} balances={balances} />
         case "transactions": return <Transactions {...{transactions, setPage, account}} />
+        case "link": return <PlaidLink {...{update, linkToken, setLinkToken}} />
         default: return <Loading />;
         }
     };
 
     return (
         <React.Fragment>
-            <PlaidLink linkToken={linkToken}/>
             {pageHandler()}
         </React.Fragment>
     );

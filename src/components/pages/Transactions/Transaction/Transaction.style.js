@@ -12,10 +12,10 @@ export const style = StyleSheet.create({
     },
     payment: {
         textAlign: "right",
-        color: colors.red,
+        color: "white"
     },
     transfer: {
         textAlign: "right",
-        color: colors.red,
+        color: colors.green,
     },
 });
