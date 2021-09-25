@@ -15,7 +15,9 @@ export default function Button(props) {
                     {props.view ? (
                         <View>{props.children}</View>
                     ) : (
-                        <Text style={style.text}>{props.children}</Text>
+                        <Text style={{color: props.opp ? "white" : "black",...style.text}}>
+                            {props.children}
+                        </Text>
                     )}
                 </View>
             </TouchableOpacity>

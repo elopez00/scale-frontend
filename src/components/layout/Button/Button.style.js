@@ -12,6 +12,6 @@ export const style = StyleSheet.create({
     text: {
         fontSize: 16,
         fontFamily: "Lato_700Bold",
-        color: "black"
+        textAlign: "center"
     }
 })

@@ -42,6 +42,9 @@ export default function Dropdown(props) {
         })
     }
 
+    /**
+     * Animates the menu and carrat
+     */
     const animateMenu = () => {
         if (scale !== 1) {
             setScale(1)
@@ -71,11 +74,13 @@ export default function Dropdown(props) {
         }
     }
 
+    // component style with animation
     const menuAnimation = {
         opacity: opacity,
         transform: [{scale}]
     }
 
+    // component style with animation
     const rotateCarat = {
         transform: [{rotate: rotate.interpolate({ inputRange: [0, 180], outputRange: ["0deg", "180deg"]})}]
     }

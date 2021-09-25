@@ -10,6 +10,7 @@ import IconButton from '../IconButton/IconButton'
 import Break from '../Break/Break'
 import Label from '../Label/Label'
 import Dropdown from '../Dropdown/Dropdown'
+import Button from '../Button/Button'
 
 import findAll from '../../helper/findAll'
 import { findByType } from '../../helper/findByType'
@@ -20,13 +21,16 @@ const Title = () => null;
 Title.displayName = "Title";
 
 const CTextInput = () => null;
-CTextInput.displayName = "TextInput"
+CTextInput.displayName = "TextInput";
 
 const CDropdown = () => null;
-CDropdown.displayName = "Dropdown"
+CDropdown.displayName = "Dropdown";
+
+const CButton = () => null;
+CButton.displayName = "Button";
 
 const Sub = () => null;
-Sub.displayName = "Sub"
+Sub.displayName = "Sub";
 
 export default function Modal(props) {
     const visibility = useState(new Animated.Value(0))[0];
@@ -66,15 +70,16 @@ export default function Modal(props) {
      */
     const renderAll = () => {
         const { children } = props;
-        const components = findAll(children, [CTextInput, CDropdown]);
+        const components = findAll(children, [CTextInput, CDropdown, CButton]);
         let output = [];
 
         let textInputs = renderTextInputs(components.TextInput) || [];
         let dropdowns = renderDropdowns(components.Dropdown) || [];
         let subs = renderSubs(components.Sub) || [];
+        let buttons = renderButtons(components.Button) || [];
         let others = components.other || [];
 
-        [...textInputs, ...dropdowns, ...subs, ...others].forEach(component => 
+        [...textInputs, ...dropdowns, ...subs, ...others, ...buttons].forEach(component => 
             output[component.index] = component?.child
         )
 
@@ -137,6 +142,28 @@ export default function Modal(props) {
         })
     }
 
+    /**
+     * Renders all button sub components
+     * 
+     * @param {Array} buttons array of button objects
+     * @returns formatted button objects
+     */
+    const renderButtons = (buttons) => {
+        return buttons?.map(button => {
+            return {
+                child: (
+                    <React.Fragment key={uuid.v4()}>
+                        <Break />
+                        <Button {...button.child.props} opp>
+                            {button.child.props.children}
+                        </Button>
+                    </React.Fragment>
+                ),
+                index: button.index
+            }
+        })
+    }
+
     const renderSubs = (subs) => {
 
     }
@@ -167,3 +194,4 @@ export default function Modal(props) {
 Modal.Dropdown = CDropdown;
 Modal.Title = Title;
 Modal.TextInput = CTextInput;
+Modal.Button = CButton;

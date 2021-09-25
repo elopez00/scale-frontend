@@ -12,7 +12,7 @@ export default function Pages(props) {
     const [transactions, setTransactions] = useState(null);
     const [account, setAccount] = useState(null);
     const [linkToken, setLinkToken] = useState("");
-    const [update, toggleUpdate] = useState(false);
+    const [showLink, toggleLink] = useState(false);
 
     // simulates componentDidMount
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function Pages(props) {
      * 
      * @param {Object} incoming 
      */
-    const loadState = (incoming) => {
+    const loadState = async (incoming) => {
         // determine that the type of 
         if (typeof incoming.balances !== "string" && typeof incoming.transactions !== "string") {
             if (incoming.balances && incoming.transactions) {
@@ -35,7 +35,7 @@ export default function Pages(props) {
                 return
             }
         } else {
-            setPage("link")
+            // define the variable that will hold the institution id
             let institution;
             if (incoming?.balances?.length > 0) {
                 institution = incoming.balances
@@ -43,6 +43,7 @@ export default function Pages(props) {
                 institution = incoming.transactions
             }
 
+            // establish put settings
             let settings = {
                 body: JSON.stringify({id: institution}),
                 method: "PUT",
@@ -50,10 +51,20 @@ export default function Pages(props) {
                 headers: new Headers({ "content-type": "application/json" }),
             };
 
-            fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link", settings)
-            .then(raw => raw.json())
-            .then(res => {
-                toggleUpdate(true); setLinkToken(res.result)})}
+            // get the response 
+            let raw = await fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link", settings)
+            let res = await raw.json();
+
+            // if there is an error return, and make an infinite loading loop
+            if (res.status !== 200) {
+                console.error(res.message);
+                return
+            }
+
+            // set link token
+            setLinkToken(res.result);
+            toggleLink(true);
+        }
     }
 
     /**
@@ -104,15 +115,15 @@ export default function Pages(props) {
     const pageHandler = () => {
         switch(page) {
         case "dashboard": return <Dashboard {...{balances, transactions, setPage}} /> 
-        case "balances": return <Balances {...{balances, transactions, setPage, setAccount}} balances={balances} />
+        case "balances": return <Balances {...{balances, transactions, setPage, setAccount, toggleLink}} balances={balances} />
         case "transactions": return <Transactions {...{transactions, setPage, account}} />
-        case "link": return <PlaidLink {...{update, linkToken, setLinkToken}} />
         default: return <Loading />;
         }
     };
 
     return (
         <React.Fragment>
+            <PlaidLink linkToken={linkToken} showLink={showLink} onClose={() => toggleLink(false)}/>
             {pageHandler()}
         </React.Fragment>
     );

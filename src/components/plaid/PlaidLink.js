@@ -1,9 +1,49 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from '@burstware/expo-plaid-link'
 import { Modal } from '../layout'
+import { style } from '../pages/Balances/Balances.style';
 
 export default function PlaidLink(props) {
-    const [something, toggleSomething] = useState(true);
+    const [initialized, initialize] = useState(false);
+    const [linkToken, setLinkToken] = useState("");
+
+    useEffect(() => {
+        if (!initialized) {
+            if (props.linkToken) {
+                setLinkToken(props.linkToken);
+                initialize(true);
+            } else {
+                getLinkToken();
+            }
+        }
+    })
+
+    /**
+     * Get the link token from backend and then use it. Used when there was no link token
+     * passed through the properties 
+     */
+    const getLinkToken = async () => {
+        try {
+            // get link token
+            let raw = await fetch(
+                "http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/link"
+            );
+
+            // convert the raw response into json
+            let res = await raw.json();
+            if (res.status !== 200) {
+                console.log(res);
+                return;
+            }
+
+            // set tokens
+            setLinkToken(res.result);
+            initialize(true);
+            console.log(res.message);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     /**
      * Calls token exchange API
@@ -12,22 +52,41 @@ export default function PlaidLink(props) {
     const exchangePublicToken = async (success) => {
         let settings = {
             body: JSON.stringify({value: success.publicToken}),
-            method: props.update ? "PUT" : "POST",
+            method: props.linkToken.length ? "POST" : "PUT",
             credentials: "include",
             headers: new Headers({ "content-type": "application/json" })
         };
 
-        let raw = await fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/exchange", settings);
-        let res = await raw.json();
+        try {
+            let raw = await fetch("http://scale-backend-dev.us-east-1.elasticbeanstalk.com/v0/token/exchange", settings);
+            let res = await raw.json();
+            if (res.status !== 200) {
+                console.log(res.message);
+                return;
+            }
+        } catch(err) {
+            console.error(err)
+        }
+
+    }
+
+    /**
+     * Closes the link and reinitiates the link
+     */
+    const closeLink = () => {
+        setLinkToken("");
+        initialize(false);
+        props.onClose();
     }
 
     return (
-        <Modal overrideClose style={{height: "80%", width: "90%", paddingTop: 0, paddingBottom: 0}} show={something}>
-            <Link 
-                linkToken={props.linkToken}
-                onSuccess={success => exchangePublicToken(success)}
-                onExit={() => console.log("Exit link")}
-            />
+        <Modal overrideClose showModal={props.showLink}style={style.modal}>
+            {linkToken?.length ? (
+                <Link 
+                    linkToken={linkToken}
+                    onSuccess={success => exchangePublicToken(success)}
+                    onExit={closeLink}
+                />) : null}
         </Modal>
     )
 }

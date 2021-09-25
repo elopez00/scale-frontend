@@ -5,13 +5,14 @@ import { style } from "./Balances.style";
 import { View, ScrollView, BackHandler } from "react-native";
 import { Header, Text, Module, Break, IconMenu, Modal, Dropdown} from "../../layout";
 import Account from "./Account/Account";
+import BalanceModals from "./BalanceModals/BalanceModals";
 
 import { prettifyNum, renderDivider } from "../../helper";
 import uuid from "react-native-uuid";
 
 export default function Balances(props) {
-    const [item, setItem ] = useState("Every Week");
     const [showModal, toggleModal] = useState(false);
+    const [showType, setType] = useState("");
 
     useEffect(() => {
         addBack();
@@ -93,27 +94,28 @@ export default function Balances(props) {
         });
     };
 
+    /**
+     * Displays the modal described by the type parameter
+     * 
+     * @param {String} type type of modal to show on menu press 
+     */
+    const menuPress = type => {
+        toggleModal(true);
+        setType(type);
+    }
+
     return (
         <View>
-            <Modal showModal={showModal} onClose={() => toggleModal(false)}>
-                <Modal.Title>Got Cash?</Modal.Title>
-                <Modal.TextInput placeholder="$100" label="Add Amount" />
-                <Modal.Dropdown label="Want a Reminder?" placeholder={item}>
-                    <Dropdown.Item onPress={() => setItem("Every day")}>Every day</Dropdown.Item>
-                    <Dropdown.Item onPress={() => setItem("Every month")}>Every month</Dropdown.Item>
-                    <Dropdown.Item onPress={() => setItem("Every Week")}>Every Week</Dropdown.Item>
-                </Modal.Dropdown>
-            </Modal>
+            <BalanceModals showType={showType} showModal={showModal} onClose={() => toggleModal(false)}/>
             <Header>
                 <Header.Button
                     icon="keyboard-arrow-left"
                     onPress={handleBack}
                 />
                 <Header.Title>Balances</Header.Title>
-                {/* <Header.Button icon="edit" right style={style.headerButton} /> */}
                 <Header.Menu right icon="edit" style={{fontSize: 25}}>
-                    <IconMenu.Item onPress={() => console.log("hello")}>Add Account</IconMenu.Item>
-                    <IconMenu.Item onPress={() => toggleModal(true)}>Add Cash</IconMenu.Item>
+                    <IconMenu.Item onPress={() => props.toggleLink(true)}>Add Account</IconMenu.Item>
+                    <IconMenu.Item onPress={() => menuPress("add-cash")}>Add Cash</IconMenu.Item>
                     <IconMenu.Item onPress={() => console.log("hello")}>Add Savings</IconMenu.Item>
                     <IconMenu.Item onPress={() => console.log("hello")} red>Remove Account</IconMenu.Item>
                 </Header.Menu>

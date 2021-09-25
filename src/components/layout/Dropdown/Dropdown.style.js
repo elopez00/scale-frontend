@@ -22,6 +22,7 @@ export const style = StyleSheet.create({
         borderRadius: 20,
         position: "absolute",
         top: 45,
-        width: "100%"
+        width: "100%",
+        zIndex: 5,
     },
 })
