@@ -106,7 +106,12 @@ export default function Balances(props) {
 
     return (
         <View>
-            <BalanceModals showType={showType} showModal={showModal} onClose={() => toggleModal(false)}/>
+            <BalanceModals 
+             showType={showType} 
+             showModal={showModal} 
+             onClose={() => toggleModal(false)}
+             debitAccounts={props.balances.Debit}
+            />
             <Header>
                 <Header.Button
                     icon="keyboard-arrow-left"
@@ -116,7 +121,7 @@ export default function Balances(props) {
                 <Header.Menu right icon="edit" style={{fontSize: 25}}>
                     <IconMenu.Item onPress={() => props.toggleLink(true)}>Add Account</IconMenu.Item>
                     <IconMenu.Item onPress={() => menuPress("add-cash")}>Add Cash</IconMenu.Item>
-                    <IconMenu.Item onPress={() => console.log("hello")}>Add Savings</IconMenu.Item>
+                    <IconMenu.Item onPress={() => menuPress("add-savings")}>Add Savings</IconMenu.Item>
                     <IconMenu.Item onPress={() => console.log("hello")} red>Remove Account</IconMenu.Item>
                 </Header.Menu>
             </Header>

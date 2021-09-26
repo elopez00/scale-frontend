@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import Link from '@burstware/expo-plaid-link'
 import { Modal } from '../layout'
-import { style } from '../pages/Balances/Balances.style';
+import { style } from './PlaidLink.style';
 
 export default function PlaidLink(props) {
     const [initialized, initialize] = useState(false);
     const [linkToken, setLinkToken] = useState("");
 
     useEffect(() => {
-        if (!initialized) {
+        if (!initialized && props.showLink) {
             if (props.linkToken) {
                 setLinkToken(props.linkToken);
                 initialize(true);
@@ -80,11 +80,12 @@ export default function PlaidLink(props) {
     }
 
     return (
-        <Modal overrideClose showModal={props.showLink}style={style.modal}>
+        <Modal overrideClose showModal={props.showLink} style={style.modal}>
             {linkToken?.length ? (
                 <Link 
                     linkToken={linkToken}
                     onSuccess={success => exchangePublicToken(success)}
+                    onError={err => console.log(err)}
                     onExit={closeLink}
                 />) : null}
         </Modal>

@@ -31,12 +31,14 @@ export default function Dropdown(props) {
 
         if (!items.length) return;
 
-        return items.filter(item => item.props.children !== placeholder).map((item, index) => {
-            // let comparison = placeholder.localeCompare(item.props.children);
+        let filtered = items.filter(item => item.props.children !== placeholder);
+        return filtered.map((item, index) => {
+            let subtraction = filtered.length === items.length ? 1 : 2;
+            
             return (
                 <TouchableOpacity key={uuid.v4()} {...item.props} style={style.item}>
                     <Text>{item.props.children}</Text>
-                    { renderDivider(index, items.length - 2) }
+                    { renderDivider(index, items.length - subtraction) }
                 </TouchableOpacity>
             )
         })

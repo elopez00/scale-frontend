@@ -3,7 +3,6 @@ import React, {useState, useEffect} from 'react'
 import { style } from './Modal.style'
 
 import { Animated, View } from 'react-native'
-// import { TouchableOpacity } from 'react-native-gesture-handler'
 import Text from '../Text/Text'
 import TextInput from '../TextInput/TextInput'
 import IconButton from '../IconButton/IconButton'
@@ -28,6 +27,9 @@ CDropdown.displayName = "Dropdown";
 
 const CButton = () => null;
 CButton.displayName = "Button";
+
+const Description = () => null;
+Description.display = "Description"
 
 const Sub = () => null;
 Sub.displayName = "Sub";
@@ -70,16 +72,17 @@ export default function Modal(props) {
      */
     const renderAll = () => {
         const { children } = props;
-        const components = findAll(children, [CTextInput, CDropdown, CButton]);
+        const components = findAll(children, [CTextInput, CDropdown, CButton, Description]);
         let output = [];
 
         let textInputs = renderTextInputs(components.TextInput) || [];
         let dropdowns = renderDropdowns(components.Dropdown) || [];
         let subs = renderSubs(components.Sub) || [];
         let buttons = renderButtons(components.Button) || [];
+        let descriptions = renderDescriptions(components.Description) || [];
         let others = components.other || [];
 
-        [...textInputs, ...dropdowns, ...subs, ...others, ...buttons].forEach(component => 
+        [...textInputs, ...dropdowns, ...subs, ...others, ...buttons, ...descriptions].forEach(component => 
             output[component.index] = component?.child
         )
 
@@ -164,6 +167,26 @@ export default function Modal(props) {
         })
     }
 
+    /**
+     * Renders all description sub components
+     * 
+     * @param {Array} descriptions array of description objects
+     * @returns formatted descrsiption objects
+     */
+    const renderDescriptions = (descriptions) => {
+        return descriptions?.map(description => {
+            return {
+                child: (
+                    <React.Fragment key={uuid.v4()}>
+                        <Text subtitle {...description.child.props}>{description.child.props.children}</Text>
+                        <Break />
+                    </React.Fragment>
+                ),
+                index: description.index
+            }
+        })
+    }
+
     const renderSubs = (subs) => {
 
     }
@@ -195,3 +218,4 @@ Modal.Dropdown = CDropdown;
 Modal.Title = Title;
 Modal.TextInput = CTextInput;
 Modal.Button = CButton;
+Modal.Description = Description;

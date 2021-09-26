@@ -1,5 +1,6 @@
 import React from 'react'
-import { Divider, Break } from '../layout';
+import Divider from '../layout/Divider/Divider'
+import Break from '../layout/Break/Break'
 
 /**
  * Given the index, this function will make sure to return a divider for all
