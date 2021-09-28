@@ -15,7 +15,7 @@ export default function AddSavingsModal(props) {
             <Modal.TextInput label="Initial Amount" placeholder="$100" />
             <Modal.Dropdown placeholder="Select" label="Subtract from Account">
                 <Dropdown.Item>Select</Dropdown.Item>
-                {props.debitAccounts?.map(account => <Dropdown.Item>{account.name}</Dropdown.Item>)}
+                {props.accounts?.Debit?.map(account => <Dropdown.Item>{account.name}</Dropdown.Item>)}
             </Modal.Dropdown>
             <Modal.Button>Add Savings</Modal.Button>
         </Modal>

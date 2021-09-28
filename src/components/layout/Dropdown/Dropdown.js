@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { style } from './Dropdown.style'
 
@@ -16,9 +16,17 @@ Item.displayName = "Item";
 
 export default function Dropdown(props) {
     // state
+    const [selected, setSelected] = useState(props.placeholder.length ? props.placeholder : "Select");
     const opacity = useState(new Animated.Value(0))[0];
     const rotate = useState(new Animated.Value(0))[0];
     const [scale, setScale] = useState(0);
+
+    /**
+     * 
+     * @param {Object} item item that is pressed
+     * @returns 
+     */
+    const onItemPress = item => setSelected(item.child.props.children);
 
     /**
      * Renders all the items in the children props
@@ -31,12 +39,12 @@ export default function Dropdown(props) {
 
         if (!items.length) return;
 
-        let filtered = items.filter(item => item.props.children !== placeholder);
+        let filtered = items.filter(item => item.props.children !== selected);
         return filtered.map((item, index) => {
             let subtraction = filtered.length === items.length ? 1 : 2;
             
             return (
-                <TouchableOpacity key={uuid.v4()} {...item.props} style={style.item}>
+                <TouchableOpacity key={uuid.v4()} onItemPress={onItemPress} {...item.props} style={style.item}>
                     <Text>{item.props.children}</Text>
                     { renderDivider(index, items.length - subtraction) }
                 </TouchableOpacity>

@@ -1,6 +1,7 @@
 import React from 'react'
 import AddCashModal from './AddCashModal'
 import AddSavingsModal from './AddSavinigsModal';
+import RemoveAccount from './RemoveAccount';
 
 export default function BalanceModals(props) {
 
@@ -12,7 +13,7 @@ export default function BalanceModals(props) {
     const showModal = () => {
         switch(props.showType) {
         case "add-cash": return <AddCashModal showModal={props.showModal} onClose={props.onClose}/>;
-        case "add-savings": return <AddSavingsModal debitAccounts={props.debitAccounts} showModal={props.showModal} onClose={props.onClose}/>
+        case "add-savings": return <AddSavingsModal accounts={props.accounts} showModal={props.showModal} onClose={props.onClose}/>
         default: return null;
         }
     }

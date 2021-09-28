@@ -107,10 +107,10 @@ export default function Balances(props) {
     return (
         <View>
             <BalanceModals 
-             showType={showType} 
-             showModal={showModal} 
-             onClose={() => toggleModal(false)}
-             debitAccounts={props.balances.Debit}
+                showType={showType} 
+                showModal={showModal} 
+                onClose={() => toggleModal(false)}
+                accounts={props.balances}
             />
             <Header>
                 <Header.Button
